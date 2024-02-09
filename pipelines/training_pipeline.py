@@ -6,7 +6,8 @@ from steps.evaluation import evaluate_model
 @pipeline(enable_cache=True)
 def training_pipeline(path:str):
     # Define pipeline here
-    data=ingest_data(path)
-    clean_data(data)
-    train_model(data)
-    evaluate_model(data)
+    df=ingest_data(path)
+    # X=clean_data(df)
+    df=clean_data(df)
+    train_model(df)
+    evaluate_model(df)
