@@ -1,1 +1,0 @@
-# object-detection-models-camparison
