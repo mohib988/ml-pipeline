@@ -16,9 +16,9 @@ class DataPreprocessingStrategy(DataStrategy):
             df=df.drop("Unnamed: 0",axis=1)
             # Drop rows with missing values
             df['created_date_time']=pd.to_datetime(df['created_date_time'])
-            df['invoice_date']=pd.to_datetime(df['invoice_date'])
-            df["month"]=pd.DatetimeIndex(df['invoice_date']).month
-            df["weekday"]=pd.DatetimeIndex(df['invoice_date']).weekday
+            df['invoice_date']=pd.to_datetime(df['created_date_time'])
+            df["month"]=pd.DatetimeIndex(df['created_date_time']).month
+            df["weekday"]=pd.DatetimeIndex(df['created_date_time']).weekday
             df['extra_info'] = df['extra_info'].replace(['N / A', 'N/A', "0", "0.0"], 0)
             df['consumer_name'] = df['consumer_name'].replace(['N / A', 'N/A', "0", "0.0"], 0)
             df['extra_info'] = df['extra_info'].replace(['test'], 1)
@@ -61,7 +61,7 @@ class DataPreprocessingStrategy(DataStrategy):
             logging.error("Error in Data Preprocessing", e)
             raise e
 class DataDivideStratedy(DataStrategy):
-        def handle_data(self, df: pd.DataFrame)-> Union[pd.DataFrame,pd.DataFrame,pd.DataFrame,pd.DataFrame] :
+        def handle_data(self, df: pd.DataFrame)-> Union[pd.DataFrame,pd.Series] :
             try:
                 logging.info("Dividing the data into train and test")
                 X_train, X_test, y_train, y_test = train_test_split(df.drop(["anomaly"],axis=1),df["anomaly"], test_size=0.2, random_state=42)
@@ -75,7 +75,7 @@ class DataCleaner:
         self.strategy = strategy
         self.df = df
 
-    def handle_data(self)->Union[pd.DataFrame,pd.DataFrame,pd.DataFrame,pd.DataFrame] :
+    def handle_data(self)->Union[pd.DataFrame,pd.Series] :
         try:
             return self.strategy.handle_data(self.df)
         except Exception as e:

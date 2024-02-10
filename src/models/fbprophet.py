@@ -1,9 +1,10 @@
 from prophet import Prophet
 import pandas as pd
 import numpy as np
+from zenml import step
 
-class AnomalyDetector:
-    def __init__(self, att="ntn", seasonality="hourly", frequency="H",df:pd.DataFrame):
+class ProphetModel:
+    def __init__(self,  df:pd.DataFrame,att="ntn", seasonality="hourly", frequency="h",):
         self.att = att
         self.seasonality = seasonality
         self.frequency = frequency
@@ -18,7 +19,9 @@ class AnomalyDetector:
             - casting: DataFrame containing the anomaly detection results
         '''
         # Prepare df in Prophet's required format
-        df2=self.df.copy()
+        df2=(self.df).copy()
+        df2["created_date_time"]=pd. to_datetime(df2["created_date_time"])      
+        
         prophet_data = df2.rename(columns={'created_date_time': 'ds', 'sales_value': 'y'})
         prophet_data = prophet_data[[self.att, 'ds', 'y']]
         prophet_data.set_index("ds", inplace=True)
@@ -50,13 +53,13 @@ class AnomalyDetector:
 
             # Use a factor to identify the outlier or anomaly
             factor = 1.5
-            forecasting_final['anomalyfb'] = forecasting_final.apply(lambda x: 1 if (np.abs(x['error']) > factor * x['uncertainty']) else 0, axis=1)
+            forecasting_final['anomaly'] = forecasting_final.apply(lambda x: 1 if (np.abs(x['error']) > factor * x['uncertainty']) else 0, axis=1)
 
             # Append the results for each restaurant to the casting DataFrame
-            casting = casting.append(forecasting_final, ignore_index=True)
+            casting = casting._append(forecasting_final, ignore_index=True)
 
         return casting.rename(columns={'ds': 'created_date_time', 'y': 'sales_value'})
-    def merge_data( casting:pd. DataFrame)->pd. DataFrame:
+    def merge_data( self,casting:pd. DataFrame)->pd. DataFrame:
         '''     
             Use to merge the anomaly detection results with the original dataset.
         Parameters:
@@ -65,9 +68,16 @@ class AnomalyDetector:
         Returns:
             - df: the original dataset with the anomaly detection results
         '''
-        df3_with_anomaly = pd.merge(df3, casting[['created_date_time', 'anomalyfb']], on='created_date_time', how='left')
-        df3_with_anomaly["anomalyfb"]=df3_with_anomaly["anomalyfb"].fillna(0)
+        self.df["created_date_time"]=pd. to_datetime(self.df["created_date_time"])
+        df3_with_anomaly = pd.merge(self.df, casting[['created_date_time', 'anomaly']], on='created_date_time', how='left')
+        df3_with_anomaly["anomaly"]=df3_with_anomaly["anomaly"].fillna(0)
         return df3_with_anomaly
+@step
+def run_prophet(df: pd.DataFrame) -> pd.DataFrame:
+    prophet = ProphetModel(df)
+    anomalies_result = prophet.detect_anomalies_prophet()
+    result =prophet.merge_data(anomalies_result)
+    return result
 # Example usage:
 # anomaly_detector = AnomalyDetector()
 # anomalies_result = anomaly_detector.detect_anomalies_prophet(your_dataframe)
