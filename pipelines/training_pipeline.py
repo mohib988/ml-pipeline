@@ -22,4 +22,4 @@ def training_pipeline(path:str):
     # localOutlierDetection.fit_predict(df)
 
     model=train_model(X_train, y_train)
-    evaluate(model, X_test, y_test)
+    a=evaluate(model, X_test, y_test)
