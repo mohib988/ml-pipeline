@@ -8,7 +8,7 @@ from src.models.isolation_forest import run_isolation_forest
 from src.merge.merge_anomaly import merge_anomaly
 from src.models.loc import run_loc
 # from src.models.fbprophet import run_prophet
-@pipeline(enable_cache=False)
+@pipeline(enable_cache=True)
 def training_pipeline(path:str):
     # Define pipeline here
     df=ingest_data(path)
