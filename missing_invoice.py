@@ -1,4 +1,6 @@
 import re
+import pandas as pd
+from datetime import datetime
 def find_missing_invoices(series):
     a=series.str.split("-").str[-1].str[-7:].str.strip()
     a = a.dropna()
@@ -15,7 +17,11 @@ result_list = []
 
 # Group by 'ntn' and find the missing invoices in each group
 def main(df):
-    for name, group in df.groupby('ntn'):
-        result_dict = {'ntn': name, 'missing_invoices': find_missing_invoices(group['invoice_no'])}
+    df["date"]=pd.to_datetime(df['created_date_time']).dt.date
+    for name, group in df.groupby(['date', 'ntn']):
+        date, ntn = name
+        result_dict = {'date': date, 'ntn': ntn, 'missing_invoices': find_missing_invoices(group['invoice_no'])}
         result_list.append(result_dict)
-        return result_list
+    filtered_data = [item for item in result_list if item['missing_invoices']]
+    return filtered_data
+
