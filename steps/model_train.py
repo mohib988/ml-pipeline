@@ -1,16 +1,17 @@
 import logging
 import pandas as pd
+import numpy as np
 from zenml import step
 from src.models.random_forest import RandomForestModel 
 from sklearn.base import ClassifierMixin
 import mlflow
 from zenml.client import Client
-
+from typing import List, Union
 experiment_tracker=Client().active_stack.experiment_tracker 
 
 
 @step(experiment_tracker=experiment_tracker.name)
-def train_model(X_train: pd.DataFrame,y_train:pd.Series) -> ClassifierMixin:
+def train_model(X: pd.DataFrame) -> Union[np.ndarray, List[int]]:
     """Train the model
     Args:
         X_train: pd.DataFrame: Training data
@@ -20,6 +21,6 @@ def train_model(X_train: pd.DataFrame,y_train:pd.Series) -> ClassifierMixin:
     """
     mlflow.sklearn.autolog()
     model=RandomForestModel()
-    model =model.train_random_forest(X_train, y_train)
+    predict =model.train_random_forest(X)
     logging.info("Training the model")
-    return model
+    return predict

@@ -18,7 +18,6 @@ class DataPreprocessingStrategy(DataStrategy):
             df['created_date_time']=pd.to_datetime(df['created_date_time'])
             df['invoice_date']=pd.to_datetime(df['created_date_time'])
             df["month"]=pd.DatetimeIndex(df['created_date_time']).month
-            df["weekday"]=pd.DatetimeIndex(df['created_date_time']).weekday
             df['extra_info'] = df['extra_info'].replace(['N / A', 'N/A', "0", "0.0"], 0)
             df['consumer_name'] = df['consumer_name'].replace(['N / A', 'N/A', "0", "0.0"], 0)
             df['extra_info'] = df['extra_info'].replace(['test'], 1)

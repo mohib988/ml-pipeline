@@ -24,4 +24,17 @@ def main(df):
         result_list.append(result_dict)
     filtered_data = [item for item in result_list if item['missing_invoices']]
     return filtered_data
+if __name__ == "__main__":
+    data = {
+    'pos_id': [1015],
+    'ntn': [3],
+    'rate_value': [13.0],
+    'sales_value': [2399.0],
+    'sales_tax': [275.88],
+    'inv_len': [5],
+}
 
+# Create a DataFrame from the dictionary
+    df = pd.DataFrame(data)
+    # df = pd.read_csv('data.csv')
+    main(df)

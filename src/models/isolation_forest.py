@@ -4,7 +4,8 @@ from typing import Tuple
 from sklearn.ensemble import IsolationForest
 from sklearn.preprocessing import StandardScaler
 from pandas import DataFrame
-
+import numpy as np
+from typing import List, Union
 class Isolation_Forest:
     def __init__(self):
         """
@@ -14,7 +15,7 @@ class Isolation_Forest:
         - contamination: float, the proportion of outliers in the data.
         """
         self.isolation_forest = IsolationForest()
-    def apply_isolation_forest(self,df) -> pd.DataFrame:
+    def apply_isolation_forest(self,df) -> Union[np.ndarray, List[int]]:
         """
         Parameters:
         - df: DataFrame, the input DataFrame containing numeric columns.
@@ -33,18 +34,18 @@ class Isolation_Forest:
         outliers = self.isolation_forest.fit_predict(df_numeric)
 
         # Add 'anomaly' column to the original DataFrame
-        df['anomaly'] = (outliers == -1).astype(int)
+        outliers = (outliers == -1).astype(int)*5
 
         return df
 
 # Example usage:
 # Initialize IsolationForest object
 @step
-def run_isolation_forest(df: pd.DataFrame) -> pd.DataFrame:
+def run_isolation_forest(df: pd.DataFrame) -> Union[np.ndarray, List[int]]:
     isolationForest = Isolation_Forest()
     # Apply Isolation Forest to the input DataFrame
-    df = isolationForest.apply_isolation_forest(df)
-    return df
+    predict = isolationForest.apply_isolation_forest(df)
+    return predict
 
 
 

@@ -1,18 +1,15 @@
 import pandas as pd
+import numpy as np
 import logging
 from zenml import step
+from typing import Union,List
 
 @step
-def merge_anomaly(df1: pd.DataFrame,df2:pd.DataFrame,df3:pd.DataFrame) -> pd.DataFrame:
+def merge_anomaly(anomaly1: Union[np.ndarray, List[int]],anomaly2:Union[np.ndarray, List[int]],anomaly3:Union[np.ndarray, List[int]]) -> Union[np.ndarray, List[int]]:
     try:
-        logging.info("Merging the anomalies")
-        df1['anomaly'] = df1['anomaly'] + df2['anomaly']+df3["anomaly"]
-        df1.loc[df1.rate_value<12,"anomaly"]=1
-        df1.loc[df1.rate_value>14,"anomaly"]=1
-        df1.loc[df1.sales_value<10,"anomaly"]=1
-        df1.loc[df1["anomaly"]>0,"anomaly"]=1
-        df1.drop(["created_date_time"],axis=1,inplace=True)
-        return df1
+        anomaly = anomaly1 + anomaly2+anomaly3
+        logging.info("Merging the anomalies",anomaly[0:5])
+        return anomaly
     except Exception as e:
         logging.error("Error in merging the anomalies")
         raise e

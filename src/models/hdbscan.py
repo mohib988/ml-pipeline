@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 from sklearn.cluster import HDBSCAN
 from sklearn.preprocessing import StandardScaler, OneHotEncoder
-
+from typing import List, Union
 from zenml import step
 
 class HDBClustering:
@@ -14,7 +14,7 @@ class HDBClustering:
 
 # Assuming 'self.df' is your DataFrame with the relevant data
 # Feature engineering
-  def run_hdb_scan(self,hour:bool=True):
+  def run_hdb_scan(self,hour:bool=True)->Union[np.ndarray, List[int]]:
       if(hour):
         self.df['hour'] = self.df['created_date_time'].dt.hour
       self.df['day'] = self.df['created_date_time'].dt.day
@@ -38,14 +38,14 @@ class HDBClustering:
       df2_scaled = scaler.fit_transform(X)
       MinPts=5
       # # Apply DBSCAN
-      self.df['anomaly'] = self.hdbscan.fit_predict(df2_scaled)
-      self.df['anomaly'] =(self.df["anomaly"] == -1).astype(int)*4
+      outliers = self.hdbscan.fit_predict(df2_scaled)
+      outliers =(outliers == -1).astype(int)*2
 
       # Filter rows marked as anomalies
       # self.df["sales_value"] = np.expm1(np.abs(self.df["sales_value"]))
-      return self.df
+      return outliers
 @step
-def run_hdb_clustering(df:pd.DataFrame,hour:bool=True,**kargs)->pd.DataFrame:
+def run_hdb_clustering(df:pd.DataFrame,hour:bool=True)->Union[np.ndarray, List[int]]:
   HDB_clustering=HDBClustering(df)
-  df=HDB_clustering.run_hdb_scan(hour)
-  return df
+  outliers=HDB_clustering.run_hdb_scan(hour)
+  return outliers
