@@ -5,7 +5,6 @@ def find_missing_invoices(series):
     a=sorted(a.apply(lambda x: re.sub(r'[^0-9]', '', str(x))).replace('', '0').astype(int))
     sorted_invoices = sorted(a)
     missing_invoices = []
-    print(name,min(sorted_invoices))
     for i in range(min(sorted_invoices), max(sorted_invoices) + 1):
         if i not in sorted_invoices:
             missing_invoices.append(i)
