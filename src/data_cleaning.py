@@ -13,7 +13,7 @@ class DataPreprocessingStrategy(DataStrategy):
     def handle_data(self, df: pd.DataFrame) -> pd.DataFrame:
         try:
             logging.info("Preprocessing the data")
-            df=df.drop("Unnamed: 0",axis=1)
+            # df=df.drop("Unnamed: 0",axis=1)
             # Drop rows with missing values
             df['created_date_time']=pd.to_datetime(df['created_date_time'])
             df['invoice_date']=pd.to_datetime(df['created_date_time'])
@@ -32,13 +32,7 @@ class DataPreprocessingStrategy(DataStrategy):
             # df.loc[df['consumer_name'] != 0, 'consumer_name'] = 1
             df['consumer_name'] = df['consumer_name'].fillna(0)
             df['invoice_type'] = df['invoice_type'].fillna(0)
-            # df["sales_value"]
-            # Grouping by 'ntn' and counting the occurrences of 'sales_value'
-            ntn_counts = df.groupby("ntn")['sales_value'].count()
-            # Getting the 'ntn' values where the count is less than 5
-            ntn_to_remove = ntn_counts[ntn_counts < 5].index.tolist()
-            # Filtering the DataFrame to exclude the 'ntn' with counts less than 5
-            df = df[~df['ntn'].isin(ntn_to_remove)]
+            
             # making every consumer_name=1
             df.loc[(df.consumer_name!="N / A") & (df.consumer_name!=0) & (df.consumer_name!=""),"consumer_name"]=1
             df.loc[(df.consumer_address!="N / A") & (df.consumer_address!=0) & (df.consumer_address!=""),"consumer_address"]=1
@@ -53,7 +47,7 @@ class DataPreprocessingStrategy(DataStrategy):
             df["day"]=(df['created_date_time']).dt.day
             df["month"]=(df['created_date_time']).dt.month
             df['time_seconds'] = df['time'].apply(lambda x: x.hour * 3600 + x.minute * 60 + x.second)
-            drop_cols=["name","pos_pass","pos_user","tariff_code","srb_invoice_id","invoice_no","invoice_date","sales_tax","time"]
+            drop_cols=["name","pos_pass","pos_user","tariff_code","srb_invoice_id","time"]
             df.drop(drop_cols,axis=1,inplace=True)
             df2=df.copy()
             return df2
