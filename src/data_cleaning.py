@@ -46,6 +46,7 @@ class DataPreprocessingStrategy(DataStrategy):
             df["day"]=(df['created_date_time']).dt.day
             df["month"]=(df['created_date_time']).dt.month
             df['time_seconds'] = df['time'].apply(lambda x: x.hour * 3600 + x.minute * 60 + x.second)
+            df["delay"]=(df['created_date_time'] - df['invoice_date']).dt.total_seconds() / 60
             drop_cols=["name","pos_pass","pos_user","tariff_code","srb_invoice_id","time"]
             df.drop(drop_cols,axis=1,inplace=True)
             df2=df.copy()

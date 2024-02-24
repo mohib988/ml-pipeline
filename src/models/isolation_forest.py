@@ -15,7 +15,7 @@ class Isolation_Forest:
         - contamination: float, the proportion of outliers in the data.
         """
         self.isolation_forest = IsolationForest()
-    def apply_isolation_forest(self,df) -> Union[np.ndarray, List[int]]:
+    def apply_isolation_forest(self,df:pd.DataFrame) -> Union[np.ndarray, List[int]]:
         """
         Parameters:
         - df: DataFrame, the input DataFrame containing numeric columns.
@@ -36,7 +36,7 @@ class Isolation_Forest:
         # Add 'anomaly' column to the original DataFrame
         outliers = (outliers == -1).astype(int)*5
 
-        return df
+        return outliers
 
 # Example usage:
 # Initialize IsolationForest object
