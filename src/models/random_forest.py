@@ -26,8 +26,13 @@ class RandomForestModel:
 
         # Load the model from the pickle file
             model = joblib.load(pickle_file_path)
+
             X["inv_len"]=len(X["invoice_no"].astype(str))
-            
+            X=X[['pos_id', 'ntn', 'rate_value', 'sales_value',
+            'sales_tax',"inv_len",
+            "delay"]]
+            logging.info("Training the model",X)
+            X.fillna(0)
             predict=model.predict(X[['pos_id', 'ntn', 'rate_value', 'sales_value',
             'sales_tax',"inv_len",
             "delay"]])
