@@ -24,4 +24,4 @@ def training_pipeline(df1):
     anomaly3=train_model(df)
     merge_outliers=merge_anomaly(anomaly1,anomaly2,anomaly3)
 
-    return df1
+    return merge_outliers
