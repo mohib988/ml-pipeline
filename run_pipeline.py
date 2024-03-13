@@ -15,6 +15,6 @@ if __name__ == '__main__':
     df=pd.read_csv("./data/AnomalyDetection.csv")
     df_dict_list = df.to_dict(orient='records')
     df_json_str = json.dumps(df_dict_list)
-    main(df_json_str)
+    main(df)
     # Run the training pipeline
  

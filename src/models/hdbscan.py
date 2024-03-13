@@ -10,7 +10,7 @@ class HDBClustering:
     self.df=df
     self.eps = 0.8  # Adjust the epsilon value based on your df2_scaled
     self.min_samples = 80
-    self.hdbscan = HDBSCAN(cluster_selection_epsilon=0.8, min_cluster_size=20)
+    self.hdbscan = HDBSCAN(cluster_selection_epsilon=1.5, min_cluster_size=10)
 
 # Assuming 'self.df' is your DataFrame with the relevant data
 # Feature engineering
@@ -28,7 +28,7 @@ class HDBClustering:
 
       # Prepare input data
       X = self.df[features]
-      X["sales_value"] = np.log1p(np.abs(X["sales_value"]))
+      # X["sales_value"] = np.log1p(np.abs(X["sales_value"]))
       # One-hot encode the 'location' column
       X=pd.get_dummies(X,columns=['location'])
 

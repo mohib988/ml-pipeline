@@ -28,12 +28,13 @@ class RandomForestModel:
             model = joblib.load(pickle_file_path)
 
             X["inv_len"]=len(X["invoice_no"].astype(str))
-            X=X[['pos_id', 'ntn', 'rate_value', 'sales_value',
+            X["sales_tax"]=X['rate_value'] * (1 + X['sales_tax']) - X['sales_value']
+            X=X[[ 'rate_value', 'sales_value',
             'sales_tax',"inv_len",
             "delay"]]
             logging.info("Training the model",X)
             X.fillna(0)
-            predict=model.predict(X[['pos_id', 'ntn', 'rate_value', 'sales_value',
+            predict=model.predict(X[[ 'rate_value', 'sales_value',
             'sales_tax',"inv_len",
             "delay"]])
             return predict
