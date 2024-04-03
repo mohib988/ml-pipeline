@@ -7,14 +7,14 @@ from pandas import DataFrame
 import numpy as np
 from typing import List, Union
 class Isolation_Forest:
-    def __init__(self):
+    def __init__(self,contamination):
         """
         Initialize the IsolationForest class.
 
         Parameters:
         - contamination: float, the proportion of outliers in the data.
         """
-        self.isolation_forest = IsolationForest()
+        self.isolation_forest = IsolationForest(contamination=contamination)
     def apply_isolation_forest(self,df:pd.DataFrame) -> Union[np.ndarray, List[int]]:
         """
         Parameters:
@@ -41,8 +41,8 @@ class Isolation_Forest:
 # Example usage:
 # Initialize IsolationForest object
 @step
-def run_isolation_forest(df: pd.DataFrame) -> Union[np.ndarray, List[int]]:
-    isolationForest = Isolation_Forest()
+def run_isolation_forest(df: pd.DataFrame,contamination:float=0.05) -> Union[np.ndarray, List[int]]:
+    isolationForest = Isolation_Forest(contamination)
     # Apply Isolation Forest to the input DataFrame
     predict = isolationForest.apply_isolation_forest(df)
     return predict
