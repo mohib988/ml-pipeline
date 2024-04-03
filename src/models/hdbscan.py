@@ -6,11 +6,11 @@ from typing import List, Union
 from zenml import step
 
 class HDBClustering:
-  def __init__(self,df:pd.DataFrame,**kargs):
+  def __init__(self,df:pd.DataFrame,min_cluster:int,**kargs):
     self.df=df
     self.eps = 0.8  # Adjust the epsilon value based on your df2_scaled
     self.min_samples = 80
-    self.hdbscan = HDBSCAN(cluster_selection_epsilon=1.5, min_cluster_size=10)
+    self.hdbscan = HDBSCAN(cluster_selection_epsilon=1.5, min_cluster_size=min_cluster)
 
 # Assuming 'self.df' is your DataFrame with the relevant data
 # Feature engineering
@@ -45,7 +45,7 @@ class HDBClustering:
       # self.df["sales_value"] = np.expm1(np.abs(self.df["sales_value"]))
       return outliers
 @step
-def run_hdb_clustering(df:pd.DataFrame,hour:bool=True)->Union[np.ndarray, List[int]]:
-  HDB_clustering=HDBClustering(df)
-  outliers=HDB_clustering.run_hdb_scan(hour)
+def run_hdb_clustering(df:pd.DataFrame,min_cluster:int=10,hour:bool=True)->Union[np.ndarray, List[int]]:
+  HDB_clustering=HDBClustering(df,min_cluster)
+  outliers=HDB_clustering.run_hdb_scan(hour=5)
   return outliers
