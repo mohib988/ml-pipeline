@@ -14,7 +14,7 @@ class Isolation_Forest:
         Parameters:
         - contamination: float, the proportion of outliers in the data.
         """
-        self.isolation_forest = IsolationForest(contamination)
+        self.isolation_forest = IsolationForest(contamination=contamination)
     def apply_isolation_forest(self,df:pd.DataFrame) -> Union[np.ndarray, List[int]]:
         """
         Parameters:
